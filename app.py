@@ -10,9 +10,7 @@ alireza6677@gmail.com
 """
 from uuid import uuid4
 
-import base64
 import logging
-import re
 import bs4
 import requests
 import json
