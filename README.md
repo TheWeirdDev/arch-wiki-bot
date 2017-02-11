@@ -2,17 +2,12 @@
 Fastest way to search through ArchWiki pages in telegram !
 
 # Requirements
-bs4
+install requirements using the following command:
 
-requests
 
-logging
-
-telegram
-
-python-telegram-bot
-
-install requirements using pip or linux repositories
+```bash
+sudo python3 -m pip install -r requirements.txt
+```
 
 #License
 GPL3

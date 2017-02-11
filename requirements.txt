@@ -1,0 +1,5 @@
+bs4
+requests
+logging
+telegram
+python-telegram-bot
