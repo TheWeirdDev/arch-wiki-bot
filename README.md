@@ -10,7 +10,7 @@ logging
 
 telegram
 
-telegram-python-bot
+python-telegram-bot
 
 install requirements using pip or linux repositories
 
