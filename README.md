@@ -1,0 +1,1 @@
+# arch-wiki-bot
