@@ -8,6 +8,10 @@ requests
 
 logging
 
+telegram
+
+telegram-python-bot
+
 install requirements using pip or linux repositories
 
 #License
