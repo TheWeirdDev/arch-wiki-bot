@@ -1,7 +1,7 @@
 # Arch Wiki bot
 Fastest way to search through ArchWiki pages in telegram !
 
-[@archwikibot]("http://t.me/archwikibot")
+[@archwikibot](http://t.me/archwikibot)
 
 # Requirements
 install requirements using the following command:
