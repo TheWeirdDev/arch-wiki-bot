@@ -82,7 +82,7 @@ def inlinequery(bot, update):
 
 
     bot.answerInlineQuery(update.inline_query.id, results=results)
-    track("5H5_IDR1G_Mdnj1dYqo2olkmmXoFO_ae" ,  update.inline_query.from_user.id , query , update.inline_query.from_user.first_name+" "+update.inline_query.from_user.last_name)
+    track("REPLACE WITH YOUR TRACKING ID" ,  update.inline_query.from_user.id , query , update.inline_query.from_user.first_name+" "+update.inline_query.from_user.last_name)
 
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
@@ -92,7 +92,7 @@ def error(bot, update, error):
         
 def main():
     # Create the Updater and pass it your bot's token.
-    updater = Updater("234988722:AAGOmv3NQqvLWTnNqHrT1o88tUHxBQZ7BCQ")
+    updater = Updater("REPLACE WITH YOUR TOKEN")
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
