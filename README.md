@@ -11,5 +11,5 @@ install requirements using the following command:
 sudo python3 -m pip install -r requirements.txt
 ```
 
-#License
-GPL3
+# License
+This program is free software, under GNU General Public License version 3, for more information see LICENSE.
