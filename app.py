@@ -35,24 +35,6 @@ or
 @archwikibot Cron
 ...""")
     
-TRACK_URL = 'https://api.botan.io/track'
-
-def track(token, uid, message, name='Message'):
-    try:
-        r = requests.post(
-            TRACK_URL,
-            params={"token": token, "uid": uid, "name": name},
-            data=json.dumps(message),
-            headers={'Content-type': 'application/json'},
-        )
-        return json.loads(r.text)
-    except requests.exceptions.Timeout:
-        # set up for a retry, or continue in a retry loop
-        return False
-    except (requests.exceptions.RequestException, ValueError) as e:
-        # catastrophic error
-        print(e)
-        return False
         
 def escape_markdown(text):
     """Helper function to escape telegram markup symbols"""
@@ -82,7 +64,6 @@ def inlinequery(bot, update):
 
 
     bot.answerInlineQuery(update.inline_query.id, results=results)
-    track("REPLACE WITH YOUR TRACKING ID" ,  update.inline_query.from_user.id , query , update.inline_query.from_user.first_name+" "+update.inline_query.from_user.last_name)
 
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
