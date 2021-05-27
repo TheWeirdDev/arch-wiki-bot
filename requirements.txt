@@ -1,4 +1,2 @@
-bs4
-pysocks
-python-telegram-bot
-requests
+gazpacho==1.1
+python-telegram-bot==13.5
