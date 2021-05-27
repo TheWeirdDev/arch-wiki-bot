@@ -1,4 +1,4 @@
 bs4
 pysocks
-logging
 python-telegram-bot
+requests

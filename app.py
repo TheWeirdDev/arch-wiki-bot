@@ -14,6 +14,8 @@ import logging
 import bs4
 import requests
 import json
+import os
+import sys
 
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
@@ -68,12 +70,18 @@ def inlinequery(bot, update):
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
-	
 
-        
+
+
 def main():
     # Create the Updater and pass it your bot's token.
-    updater = Updater("REPLACE WITH YOUR TOKEN")
+    try:
+        token = os.environ['BOT_TOKEN']
+    except KeyError:
+        logger.critical('No BOT_TOKEN environment variable passed. Terminating.')
+        sys.exit(1)
+
+    updater = Updater(token)
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
