@@ -13,7 +13,6 @@ Updated in 27/05/2021 by: @NicKoehler
 
 import os
 import sys
-import json
 import logging
 from uuid import uuid4
 from gazpacho import get, Soup
