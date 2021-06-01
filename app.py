@@ -7,81 +7,104 @@
 """
 Written by: @Alireza6677
 alireza6677@gmail.com
-"""
-from uuid import uuid4
 
-import logging
-import bs4
-import requests
-import json
+Updated in 27/05/2021 by: @NicKoehler
+"""
+
 import os
 import sys
-
-from telegram import InlineQueryResultArticle, InputTextMessageContent
+import logging
+from uuid import uuid4
+from gazpacho import get, Soup
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
+from telegram import InlineQueryResultArticle, InputTextMessageContent
 
 # Enable logging
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+)
 
 logger = logging.getLogger(__name__)
 
-def start(bot, update):
-    bot.sendMessage(update.message.chat_id, text='This bot can search in arch wiki for you in in-line mode. /help for more info.')
 
-def help(bot, update):
-    bot.sendMessage(update.message.chat_id, text="""To search with this bot you can easily type @archwikibot and then something you want to search. for example :
+def start(update, context):
+    update.message.reply_text(
+        "This bot can search in arch wiki for you in in-line mode.\n/help for more info.",
+    )
+
+
+def help(update, context):
+    update.message.reply_text(
+        """To search with this bot you can easily type @archwikibot and then something you want to search. for example :
 @archwikibot Tor
 or
 @archwikibot Cron
-...""")
-    
-        
-def escape_markdown(text):
-    """Helper function to escape telegram markup symbols"""
-    escape_chars = '\*_`\['
-    return re.sub(r'([%s])' % escape_chars, r'\\\1', text)
+...""",
+    )
 
 
-def inlinequery(bot, update):
+def inlinequery(update, context):
     query = update.inline_query.query
-    results = list()
+    results = []
 
     prefix = "https://wiki.archlinux.org/index.php?profile=default&fulltext=Search&search="
-    page = requests.get(prefix + query)
-    ex = bs4.BeautifulSoup(page.content , "html.parser")
-    names = ex.find_all("div" , {"class" :"mw-search-result-heading"})
-    
+
+    try:
+        page = get(prefix + query)
+    except Exception as e:
+        update.message.reply_text("Sorry, archlinux wiki is offline.")
+        logger.error(e)
+        return
+
+    html = Soup(page)
+    names = html.find("li", {"class": "mw-search-result"}, mode="all")
+
     for one in names:
-        #print(one.a['title'] , " :  " , one.a['href'])
-        content = ''
-        link = 'https://wiki.archlinux.org' + one.a['href']
-            
-        results.append(InlineQueryResultArticle(
-            id=uuid4(),
-            title=one.a['title'], 
-            input_message_content=InputTextMessageContent(one.a['title'] + "\n" + link)))
+
+        temp = one.find("div", {"class": "mw-search-result-heading"})
+        title = temp.text
+        description = one.find(
+            "div", {"class": "mw-search-result-data"}, mode="first"
+        ).text
+        link = f"https://wiki.archlinux.org{temp.find('a').attrs['href']}"
+
+        results.append(
+            InlineQueryResultArticle(
+                id=uuid4(),
+                title=title,
+                description=description,
+                input_message_content=InputTextMessageContent(
+                    message_text=title,
+                ),
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [InlineKeyboardButton("Read the docs", url=link)],
+                    ]
+                ),
+            )
+        )
+
+    update.inline_query.answer(results, cache_time=0)
 
 
-
-    bot.answerInlineQuery(update.inline_query.id, results=results)
-
-def error(bot, update, error):
-    logger.warn('Update "%s" caused error "%s"' % (update, error))
-
-
+def error(update, context):
+    logger.warning(f"Update {update} caused error {context.error}")
 
 
 def main():
     # Create the Updater and pass it your bot's token.
     try:
-        token = os.environ['BOT_TOKEN']
+        token = os.environ["BOT_TOKEN"]
     except KeyError:
-        logger.critical('No BOT_TOKEN environment variable passed. Terminating.')
+        logger.critical(
+            "No BOT_TOKEN environment variable passed. Terminating."
+        )
         sys.exit(1)
 
     updater = Updater(token)
+
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
@@ -103,5 +126,6 @@ def main():
     # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
